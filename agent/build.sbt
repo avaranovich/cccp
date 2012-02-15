@@ -5,7 +5,8 @@ name := "cccp-agent"
 libraryDependencies ++= Seq(
   "se.scalablesolutions.akka" % "akka-actor" % "1.2",
   "com.reportgrid" %% "blueeyes" % "0.4.24",
-  "org.specs2" %% "specs2" % "1.7-SNAPSHOT" % "test")
+  "org.specs2" %% "specs2" % "1.7-SNAPSHOT" % "test",
+  "net.liftweb" %% "lift-json" % "2.4")
 
 resolvers ++= Seq(
   "Sonatype"    at "http://nexus.scala-tools.org/content/repositories/public",
