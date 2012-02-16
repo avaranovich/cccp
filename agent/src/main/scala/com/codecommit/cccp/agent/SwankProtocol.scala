@@ -70,6 +70,10 @@ class SwankProtocol(socket: Socket) extends Actor {
   def receiveData(chunk: String) {
     println("Handling chunk: " + chunk)
     
+    val cmd = Command.read(chunk)
+    println(cmd.asInstanceOf[AnyRef].getClass.getSimpleName)
+    println(cmd.toSExpr)
+
     SExp.read(new CharSequenceReader(chunk)) match {
       case SExpList(KeywordAtom(":swank-rpc") :: (form @ SExpList(SymbolAtom(name) :: _)) :: IntAtom(callId) :: _) => {
         try {
