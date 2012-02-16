@@ -13,7 +13,8 @@ resolvers ++= Seq(
   "Scala Tools" at "http://scala-tools.org/repo-snapshots/",
   "JBoss"       at "http://repository.jboss.org/nexus/content/groups/public/",
   "Akka"        at "http://akka.io/repository/",
-  "GuiceyFruit" at "http://guiceyfruit.googlecode.com/svn/repo/releases/")
+  "GuiceyFruit" at "http://guiceyfruit.googlecode.com/svn/repo/releases/",
+  "Virtual-Void repository" at "http://mvn.virtual-void.net")
 
 exportJars := true
   

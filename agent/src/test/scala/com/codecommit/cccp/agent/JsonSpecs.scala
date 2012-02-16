@@ -6,7 +6,7 @@ import net.liftweb.json._
 import util._
 
 object JsonSpecs extends Specification {
-	val initConnectionJson = """{"swank":"init-connection", "args":[{"protocol": "http", "host": "localhost"}]}"""
+	val initConnectionJson = """{"swank":"init-connection", "args":[{"protocol": "http", "host": "localhost", "port": 123}]}"""
 	val linkFileJson = """{"swank":"link-file", "args":[{"id": "id", "file-name":"file-name" }] }"""
 	val unlinkFileJson = """{"swank":"unlink-file", "args":[{ "file-name":"file-name" }] }"""
 	val editFileJson = """{"swank": "edit-file", "file-name":"log.txt", "args":[{"key1": "value1"}, {"key2": "value2"}] }"""
@@ -65,6 +65,9 @@ object JsonSpecs extends Specification {
 		}
 		"recognize non-json command" in {
 			Command.read(sExpr).asInstanceOf[AnyRef].getClass.getSimpleName mustEqual "NonJsonCommand"
+		}
+		"generate a valid SWANK from json for EditFile command" in {
+			Command.read(editFileJson).toSExpr mustEqual "(swank:edit-file log.txt ((:key1 value1 :key2 value2)))"
 		}
 		"pass default SWANK command as is" in {
 			Command.read(sExpr).toSExpr mustEqual "(swank:init-connection (:protocol protocol :host host :port port))"
