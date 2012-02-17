@@ -26,9 +26,10 @@ object Command {
     			case "unlink-file"     => json.extract[UnlinkFile]
     			case "edit-file"       => {
     				val args = (json \ "args").extract[List[Map[String, String]]]
+    				val callId = (json \ "callId").extract[Int]
 					val res = new EditFile((json \ "swank").extract[String], 
 								       (json \ "file-name").extract[String],
-								       args)
+								       args, callId)
 					res		       
     			}
     			case _ => NonJsonCommand(str)	
@@ -40,29 +41,29 @@ object Command {
     }
 }
 
-case class InitConnection(swank: String, args: List[Connection]) extends Command {
+case class InitConnection(swank: String, args: List[Connection], callId: Int) extends Command {
 	override def toSExpr = {
-		"(swank:init-connection (:protocol %s :host $s :port %s))" format (args(0).protocol, args(0).host, args(0).port)
+		"(swank:init-connection (:protocol %s :host $s :port %s) %s)" format (args(0).protocol, args(0).host, args(0).port, callId)
 	}	
 }
 case class Connection(protocol: String, host: String, port: Int)
-case class LinkFile(swank: String, args: List[LinkFileArgs]) extends Command {
+case class LinkFile(swank: String, args: List[LinkFileArgs], callId: Int) extends Command {
 	override def toSExpr = {
-		"(swank:init-file %s)" format (args(0).`file-name`)
+		"((swank:init-file %s) %s)" format (args(0).`file-name`, callId)
 	}	
 }
 
 case class LinkFileArgs(id: String, `file-name`: String)
-case class UnlinkFile(swank: String, args: List[UnlinkFileArgs]) extends Command {
+case class UnlinkFile(swank: String, args: List[UnlinkFileArgs], callId: Int) extends Command {
 	override def toSExpr = {
-		"(swank:unlink-file %s)" format (args(0).`file-name`)
+		"((swank:unlink-file %s) %s)" format (args(0).`file-name`, callId)
 	}	
 }
 case class UnlinkFileArgs(`file-name`: String)
-case class EditFile(swank: String, `file-name`: String, args: List[Map[String, String]]) extends Command {
+case class EditFile(swank: String, `file-name`: String, args: List[Map[String, String]], callId: Int) extends Command {
 	override def toSExpr = {
 		val listArgs = args map(a => (a.map{ case(k,v) => ":" + k + " " + v } toList).head)
 		val strArgs = listArgs.aggregate("")(_ + " " + _, _ + " " + _).trim
-		"(swank:edit-file %s ((%s)))" format (`file-name`,strArgs)	
+		"(swank:edit-file %s ((%s)) %s)" format (`file-name`,strArgs, callId)	
 	}	
 }

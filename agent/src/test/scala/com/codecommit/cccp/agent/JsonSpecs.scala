@@ -6,11 +6,11 @@ import net.liftweb.json._
 import util._
 
 object JsonSpecs extends Specification {
-	val initConnectionJson = """{"swank":"init-connection", "args":[{"protocol": "http", "host": "localhost", "port": 123}]}"""
-	val linkFileJson = """{"swank":"link-file", "args":[{"id": "id", "file-name":"file-name" }] }"""
-	val unlinkFileJson = """{"swank":"unlink-file", "args":[{ "file-name":"file-name" }] }"""
-	val editFileJson = """{"swank": "edit-file", "file-name":"log.txt", "args":[{"key1": "value1"}, {"key2": "value2"}] }"""
-	val sExpr = "(swank:init-connection (:protocol protocol :host host :port port))"
+	val initConnectionJson = """{"swank":"init-connection", "args":[{"protocol": "http", "host": "localhost", "port": 123}], "callId" : 1}"""
+	val linkFileJson = """{"swank":"link-file", "args":[{"id": "id", "file-name":"file-name" }], "callId": 1}"""
+	val unlinkFileJson = """{"swank":"unlink-file", "args":[{ "file-name":"file-name" }], "callId": 1 }"""
+	val editFileJson = """{"swank": "edit-file", "file-name":"log.txt", "args":[{"key1": "value1"}, {"key2": "value2"}], "callId": 1}"""
+	val sExpr = "(swank:init-connection (:protocol protocol :host host :port port) 1)"
 	//#(swank:init-connection (:protocol protocol :host host :port port))
 	"agent json parser" should {
 		"support init-connection json message" in {
@@ -39,9 +39,10 @@ object JsonSpecs extends Specification {
 			implicit val formats = DefaultFormats
 			val json = parse(editFileJson)
 			val args = (json \ "args").extract[List[Map[String, String]]]
+			val callId = (json \ "callId").extract[Int]
 			val res = new EditFile((json \ "swank").extract[String], 
 							       (json \ "file-name").extract[String],
-							       args)
+							       args, callId)
 			res.swank mustEqual "edit-file"
 			res.`file-name` mustEqual "log.txt"
 			res.args.length mustEqual 2
@@ -67,10 +68,10 @@ object JsonSpecs extends Specification {
 			Command.read(sExpr).asInstanceOf[AnyRef].getClass.getSimpleName mustEqual "NonJsonCommand"
 		}
 		"generate a valid SWANK from json for EditFile command" in {
-			Command.read(editFileJson).toSExpr mustEqual "(swank:edit-file log.txt ((:key1 value1 :key2 value2)))"
+			Command.read(editFileJson).toSExpr mustEqual "(swank:edit-file log.txt ((:key1 value1 :key2 value2)) 1)"
 		}
 		"pass default SWANK command as is" in {
-			Command.read(sExpr).toSExpr mustEqual "(swank:init-connection (:protocol protocol :host host :port port))"
+			Command.read(sExpr).toSExpr mustEqual "(swank:init-connection (:protocol protocol :host host :port port) 1)"
 		}
 	}
 }
