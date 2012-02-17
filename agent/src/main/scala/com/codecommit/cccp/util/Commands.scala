@@ -43,7 +43,7 @@ object Command {
 
 case class InitConnection(swank: String, args: List[Connection], callId: Int) extends Command {
 	override def toSExpr = {
-		"(swank:init-connection (:protocol %s :host $s :port %s) %s)" format (args(0).protocol, args(0).host, args(0).port, callId)
+		"(swank:init-connection (:protocol %s :host %s :port %s) %s)" format (args(0).protocol, args(0).host, args(0).port, callId)
 	}	
 }
 case class Connection(protocol: String, host: String, port: Int)

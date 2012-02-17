@@ -20,6 +20,7 @@ object JsonSpecs extends Specification {
 			obj.args.length mustEqual 1
 			obj.args(0).protocol mustEqual "http"
 			obj.args(0).host mustEqual "localhost"
+			obj.arg(0).protocol mustEqual 123
 		}
 		"support link-file json message" in {
 			implicit val formats = DefaultFormats
