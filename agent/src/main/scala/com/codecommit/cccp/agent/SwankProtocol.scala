@@ -83,7 +83,7 @@ class SwankProtocol(socket: Socket) extends Actor {
         }
       }
       
-      case _ => sendProtocolError(ErrUnrecognizedForm, chunk)
+      case _ => sendProtocolError(ErrUnrecognizedForm, cmd.toSExpr)
     }
   }
   

@@ -20,7 +20,7 @@ object JsonSpecs extends Specification {
 			obj.args.length mustEqual 1
 			obj.args(0).protocol mustEqual "http"
 			obj.args(0).host mustEqual "localhost"
-			obj.arg(0).protocol mustEqual 123
+			obj.args(0).port mustEqual 123
 		}
 		"support link-file json message" in {
 			implicit val formats = DefaultFormats
@@ -69,7 +69,7 @@ object JsonSpecs extends Specification {
 			Command.read(sExpr).asInstanceOf[AnyRef].getClass.getSimpleName mustEqual "NonJsonCommand"
 		}
 		"generate a valid SWANK from json for EditFile command" in {
-			Command.read(editFileJson).toSExpr mustEqual "(swank:edit-file log.txt ((:key1 value1 :key2 value2)) 1)"
+			Command.read(editFileJson).toSExpr mustEqual "(:swank-rpc (swank:edit-file log.txt (:key1 value1 :key2 value2)) 1)"
 		}
 		"pass default SWANK command as is" in {
 			Command.read(sExpr).toSExpr mustEqual "(swank:init-connection (:protocol protocol :host host :port port) 1)"

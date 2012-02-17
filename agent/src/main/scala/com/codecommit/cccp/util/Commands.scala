@@ -43,20 +43,23 @@ object Command {
 
 case class InitConnection(swank: String, args: List[Connection], callId: Int) extends Command {
 	override def toSExpr = {
-		"(swank:init-connection (:protocol %s :host %s :port %s) %s)" format (args(0).protocol, args(0).host, args(0).port, callId)
+		val res = "(:swank-rpc (swank:init-connection (:protocol \"%s\" :host \"%s\" :port %s)) %s)" format (args(0).protocol, args(0).host, args(0).port, callId)
+		"0000" + Integer.toString(res.length , 16) + res
 	}	
 }
 case class Connection(protocol: String, host: String, port: Int)
 case class LinkFile(swank: String, args: List[LinkFileArgs], callId: Int) extends Command {
 	override def toSExpr = {
-		"((swank:init-file %s) %s)" format (args(0).`file-name`, callId)
+		val res = "(:swank-rpc (swank:init-file %s) %s)" format (args(0).`file-name`, callId)
+		"0000" + Integer.toString(res.length , 16) + res
 	}	
 }
 
 case class LinkFileArgs(id: String, `file-name`: String)
 case class UnlinkFile(swank: String, args: List[UnlinkFileArgs], callId: Int) extends Command {
 	override def toSExpr = {
-		"((swank:unlink-file %s) %s)" format (args(0).`file-name`, callId)
+		val res = "(:swank-rpc (swank:unlink-file %s) %s)" format (args(0).`file-name`, callId)
+		"0000" + Integer.toString(res.length , 16) + res
 	}	
 }
 case class UnlinkFileArgs(`file-name`: String)
@@ -64,6 +67,7 @@ case class EditFile(swank: String, `file-name`: String, args: List[Map[String, S
 	override def toSExpr = {
 		val listArgs = args map(a => (a.map{ case(k,v) => ":" + k + " " + v } toList).head)
 		val strArgs = listArgs.aggregate("")(_ + " " + _, _ + " " + _).trim
-		"(swank:edit-file %s ((%s)) %s)" format (`file-name`,strArgs, callId)	
+		val res = "(:swank-rpc (swank:edit-file %s (%s)) %s)" format (`file-name`,strArgs, callId)	
+		"0000" + Integer.toString(res.length , 16) + res
 	}	
 }
