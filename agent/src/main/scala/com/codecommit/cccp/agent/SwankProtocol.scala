@@ -74,7 +74,7 @@ class SwankProtocol(socket: Socket) extends Actor {
     println(cmd.asInstanceOf[AnyRef].getClass.getSimpleName)
     println(cmd.toSExpr)
 
-    SExp.read(new CharSequenceReader(chunk)) match {
+    SExp.read(new CharSequenceReader(cmd.toSExpr)) match {
       case SExpList(KeywordAtom(":swank-rpc") :: (form @ SExpList(SymbolAtom(name) :: _)) :: IntAtom(callId) :: _) => {
         try {
           handleRPC(name, form, callId)
