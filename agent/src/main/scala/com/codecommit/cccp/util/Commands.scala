@@ -58,7 +58,7 @@ case class LinkFile(swank: String, args: List[LinkFileArgs], callId: Int) extend
 case class LinkFileArgs(id: String, `file-name`: String)
 case class UnlinkFile(swank: String, args: List[UnlinkFileArgs], callId: Int) extends Command {
 	override def toSExpr = {
-		val res = "(:swank-rpc (swank:unlink-file %s) %s)" format (args(0).`file-name`, callId)
+		val res = "(:swank-rpc (swank:unlink-file \"%s\") %s)" format (args(0).`file-name`, callId)
 		//"0000" + Integer.toString(res.length , 16) + res
 		res
 	}	
