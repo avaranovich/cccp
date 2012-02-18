@@ -50,7 +50,7 @@ case class InitConnection(swank: String, args: List[Connection], callId: Int) ex
 case class Connection(protocol: String, host: String, port: Int)
 case class LinkFile(swank: String, args: List[LinkFileArgs], callId: Int) extends Command {
 	override def toSExpr = {
-		"(:swank-rpc (swank:link-file \"%s\") %s)" format (args(0).`file-name`, callId)
+		"(:swank-rpc (swank:link-file \"%s\" \"%s\") %s)" format (args(0).id, args(0).`file-name`, callId)
 	}	
 }
 
