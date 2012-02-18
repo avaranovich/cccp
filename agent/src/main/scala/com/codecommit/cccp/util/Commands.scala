@@ -51,7 +51,8 @@ case class Connection(protocol: String, host: String, port: Int)
 case class LinkFile(swank: String, args: List[LinkFileArgs], callId: Int) extends Command {
 	override def toSExpr = {
 		val res = "(:swank-rpc (swank:init-file \"%s\") %s)" format (args(0).`file-name`, callId)
-		"0000" + Integer.toString(res.length , 16) + res
+		//"0000" + Integer.toString(res.length , 16) + res
+		res
 	}	
 }
 
