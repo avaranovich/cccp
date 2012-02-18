@@ -65,8 +65,14 @@ case class UnlinkFile(swank: String, args: List[UnlinkFileArgs], callId: Int) ex
 }
 case class UnlinkFileArgs(`file-name`: String)
 case class EditFile(swank: String, `file-name`: String, args: List[Map[String, String]], callId: Int) extends Command {
+	def escape(k: String, v: String){
+		if ((k == "insert") || (k == "delete")){
+			k + " \""+v+"\""
+		}
+		k + " " + v
+	}
 	override def toSExpr = {
-		val listArgs = args map(a => (a.map{ case(k,v) => ":" + k + " " + v } toList).head)
+		val listArgs = args map(a => (a.map{ case(k,v) => ":" + escape(k,v) } toList).head)
 		val strArgs = listArgs.aggregate("")(_ + " " + _, _ + " " + _).trim
 		val res = "(:swank-rpc (swank:edit-file \"%s\" (%s)) %s)" format (`file-name`,strArgs, callId)	
 		//"0000" + Integer.toString(res.length , 16) + res
