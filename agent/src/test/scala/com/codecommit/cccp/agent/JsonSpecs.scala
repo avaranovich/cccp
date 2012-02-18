@@ -9,7 +9,7 @@ object JsonSpecs extends Specification {
 	val initConnectionJson = """{"swank":"init-connection", "args":[{"protocol": "http", "host": "localhost", "port": 123}], "callId" : 1}"""
 	val linkFileJson = """{"swank":"link-file", "args":[{"id": "id", "file-name":"file-name" }], "callId": 1}"""
 	val unlinkFileJson = """{"swank":"unlink-file", "args":[{ "file-name":"file-name" }], "callId": 1 }"""
-	val editFileJson = """{"swank": "edit-file", "file-name":"log.txt", "args":[{"key1": "value1"}, {"key2": "value2"}], "callId": 1}"""
+	val editFileJson = """{"swank": "edit-file", "file-name":"log.txt", "args":[{"key1": "value1"}, {"insert": "foo"}], "callId": 1}"""
 	val sExpr = "(swank:init-connection (:protocol protocol :host host :port port) 1)"
 	//#(swank:init-connection (:protocol protocol :host host :port port))
 	"agent json parser" should {
@@ -48,7 +48,7 @@ object JsonSpecs extends Specification {
 			res.`file-name` mustEqual "log.txt"
 			res.args.length mustEqual 2
 			res.args(0)("key1") mustEqual "value1"
-			res.args(1)("key2") mustEqual "value2"
+			res.args(1)("insert") mustEqual "foo"
 		}
 	}
 
@@ -69,7 +69,7 @@ object JsonSpecs extends Specification {
 			Command.read(sExpr).asInstanceOf[AnyRef].getClass.getSimpleName mustEqual "NonJsonCommand"
 		}
 		"generate a valid SWANK from json for EditFile command" in {
-			Command.read(editFileJson).toSExpr mustEqual "(:swank-rpc (swank:edit-file log.txt (:key1 value1 :key2 value2)) 1)"
+			Command.read(editFileJson).toSExpr mustEqual "(:swank-rpc (swank:edit-file \"log.txt\" (:key1 value1 :insert \"foo\")) 1)"
 		}
 		"pass default SWANK command as is" in {
 			Command.read(sExpr).toSExpr mustEqual "(swank:init-connection (:protocol protocol :host host :port port) 1)"
