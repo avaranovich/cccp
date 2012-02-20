@@ -53,7 +53,7 @@ case class SExpList(items: Iterable[SExp]) extends SExp with Iterable[SExp] {
 
   override def toJson = {
     implicit val formats = DefaultFormats
-    items.map { item=> write(item)}.mkString(",")
+    "[" + items.map { item=> write(item)}.mkString(",") + "]"
   }
 
   def toKeywordMap(): Map[KeywordAtom, SExp] = {
