@@ -74,5 +74,8 @@ object JsonSpecs extends Specification {
 		"pass default SWANK command as is" in {
 			Command.read(sExpr).toSExpr mustEqual "(swank:init-connection (:protocol protocol :host host :port port) 1)"
 		}
+		"support conversion of edit-performed command SEXpr -> Json" in {
+			Command.fromSExpr("(:edit-performed \"/Users/varanovich/Desktop/foo.txt\" (:retain 1 :insert \"ra\" :retain 4))") mustEqual "foo"
+		}
 	}
 }

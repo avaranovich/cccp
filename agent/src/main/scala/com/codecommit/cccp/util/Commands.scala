@@ -1,6 +1,7 @@
 package com.codecommit.cccp
 package util
 
+import scala.util.parsing.input.CharSequenceReader
 import net.liftweb.json._ 
 
 abstract class Command {
@@ -17,6 +18,7 @@ object Command {
 	def read(str: String): Command = {
 		implicit val formats = DefaultFormats
 		try {
+
 			val json = parse(str)
 			val t = (json \ "swank").extract[String]
 
@@ -39,6 +41,12 @@ object Command {
 			case e: Exception => NonJsonCommand(str) 
 		}
     }
+
+    def fromSExpr(str: String){
+    	 //(:edit-performed "/Users/varanovich/Desktop/foo.txt" (:retain 1 :insert "ra" :retain 4))
+	   val r = SExp.read(new CharSequenceReader(str))
+	   r.toReadableString
+	}
 }
 
 case class InitConnection(swank: String, args: List[Connection], callId: Int) extends Command {

@@ -31,11 +31,14 @@ package util
 import scala.collection.immutable.Map
 import scala.util.parsing.combinator._
 import scala.util.parsing.input._
+import net.liftweb.json._ 
+import net.liftweb.json.Serialization.{read, write}
 
 abstract class SExp {
   def toReadableString: String = toString
   def toWireString: String = toReadableString
   def toScala: Any = toString
+  def toJson: String = toJson
 }
 
 case class SExpList(items: Iterable[SExp]) extends SExp with Iterable[SExp] {
@@ -46,6 +49,11 @@ case class SExpList(items: Iterable[SExp]) extends SExp with Iterable[SExp] {
 
   override def toReadableString = {
     "(" + items.map { _.toReadableString }.mkString(" ") + ")"
+  }
+
+  override def toJson = {
+    implicit val formats = DefaultFormats
+    items.map { item=> write(item)}.mkString(",")
   }
 
   def toKeywordMap(): Map[KeywordAtom, SExp] = {
