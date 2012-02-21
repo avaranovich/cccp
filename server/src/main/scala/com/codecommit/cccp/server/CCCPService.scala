@@ -27,6 +27,9 @@ trait CCCPService extends BlueEyesServiceBuilder {
               get { request: HttpRequest[ByteChunk] =>
                 implicit val timeout = Actor.Timeout(2 * 60 * 1000)
                 
+                val agentId = request.headers.get("AgentId")
+                log.info("request from " + agentId)
+
                 log.info("accessing history at a version " + request.parameters('version))
                 
                 val response = files ? RequestHistory(request parameters 'id, request.parameters('version).toInt)

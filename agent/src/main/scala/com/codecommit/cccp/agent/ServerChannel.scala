@@ -13,10 +13,12 @@ class ServerChannel(protocol: String, host: String, port: Int) extends Actor {
   import server.OpChunkUtil._
   
   val MaxDelay = 30 * 1000       // 30 seconds
-  
+  val agentId = java.net.InetAddress.getLocalHost.getHostName
+  println("Agent ID: " + agentId)
+
   val client = {
     val back = new HttpClientXLightWeb
-    back.protocol(protocol).host(host).port(port).contentType(text/plain)
+    back.protocol(protocol).host(host).port(port).contentType(text/plain).header("AgentId", agentId)
   }
   
   def receive = {
